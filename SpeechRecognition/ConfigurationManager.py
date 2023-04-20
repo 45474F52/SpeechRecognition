@@ -1,0 +1,108 @@
+﻿import os
+
+file = "appConfig.txt"
+"""
+Путь до файла конфигурации приложения
+"""
+
+
+def set_path(path: str):
+    """
+    Устанавливает новый путь до файла конфигурации
+    :remarks: Вызывает исключение FileNotFoundError, если файла по указанному пути не существует
+    :param path: путь до файла конфигурации
+    """
+    if os.path.exists(path):
+        global file
+        file = path
+    else:
+        raise FileNotFoundError(path)
+
+
+def get_all_lines() -> list[str]:
+    """
+    Возвращает все строки из файла конфигурации
+    """
+    with open(file, "r") as config:
+        lines = config.readlines()
+    return lines
+
+
+def get_line_by_prop_name(name: str) -> str:
+    """
+    Возвращает строку из файла конфигурации с определённым свойством или пустую строку, если искомое свойство не найдено
+    :param name: имя свойства
+    """
+    lines = get_all_lines()
+    i = 0
+    while i < len(lines):
+        if lines[i].startswith("property: " + name.lower()):
+            return lines[i]
+        else:
+            i = i + 1
+
+    return ""
+
+
+def get_prop_value_pair(name: str) -> list[str]:
+    """
+    Возвращает пару "свойство - значение" по имени свойства или пустой список, если искомое свойство не найдено
+    :param name: имя свойства
+    """
+    return parse_pair_from_line(get_line_by_prop_name(name))
+
+
+def parse_pair_from_line(line: str) -> list[str]:
+    """
+    Возвращает пару "свойство - значение" из строки со свойством или пустой список, если искомое свойство не найдено
+    :param line: строка со свойством из файла конфигурации
+    """
+    pair = list[str]()
+    if line != "":
+        pair = line.split(" #")[0].split(";")
+    return pair
+
+
+def parse_value_from_pair(value: str) -> str:
+    """
+    Возвращает значение, хранимое в паре "свойство - значение" или пустую строку, если значение было пустым
+    :param value: "значение" из пары "свойство - значение"
+    """
+    return (
+        "" if value.isspace() == True or value == "" else value.replace("value: ", "")
+    )
+
+
+def get_value_by_prop_name(name: str) -> str:
+    """
+    Возвращает значение свойства по его имени из файла конфигурации приложения или пустую строку, если искомое свойство не найдено
+    :param name: имя свойства
+    """
+    pair = get_prop_value_pair(name)
+    return "" if len(pair) < 2 else parse_value_from_pair(pair[1])
+
+
+def set_value_by_prop_name(name: str, value: str) -> None:
+    """
+    Ищет свойство по имени и, если оно найдено, устанавливает для него значение
+    :remarks: Новое значение не должно содержать следующие спецсимволы ':', ',', ';', '#', '|'
+    :param: name: имя свойства
+    :param: value: новое значение свойства
+    """
+    line = get_line_by_prop_name(name)
+    if line != "":
+        prop_value_pair = parse_pair_from_line(line)
+        if len(prop_value_pair) >= 2:
+            new_pair = prop_value_pair.copy()
+            new_pair[1] = "value: " + value
+            newLine = line.replace(";".join(prop_value_pair), ";".join(new_pair))
+
+            config = open(file, "r")
+            text = config.read()
+            config.close()
+
+            text = text.replace(line, newLine)
+
+            config = open(file, "w")
+            config.write(text)
+            config.close()
