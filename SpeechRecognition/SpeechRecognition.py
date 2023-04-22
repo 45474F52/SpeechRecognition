@@ -35,18 +35,16 @@ def format_text_to_parameters(text: str) -> tuple[str, list[str]]:
     return [command_name, command_args]
 
 
-def manual_testing():
-    """
-    Запускается для ручного тестирования программы
-    """
+def manual_testing() -> int:
+    """Запускается для ручного тестирования программы"""
     text = ""
     while text != "exit":
+        ch.Command.named = True
         text = input("Command >>> ")
         querry = format_text_to_parameters(text)
         execute_command(querry[0], querry[1])
-        ch.Command.named = True
 
-    return exit(0)
+    return int(0)
 
 
 __recHandler = rh.RecognitionHandler
@@ -54,9 +52,7 @@ __assistant = am.Assistant
 
 
 def main() -> int:
-    """
-    Точка старта программы
-    """
+    """Точка старта программы"""
     global __recHandler
     global __assistant
 
@@ -70,25 +66,22 @@ def main() -> int:
     ch.init_references(__recHandler)
 
     model = config.get_value_by_prop_name("model")
-    if model == "small":
-        __recHandler.set_model(rh.Models.small_model)
-    elif model == "big":
+    if model == "big":
         __recHandler.set_model(rh.Models.big_model)
     else:
-        exit(1)
+        __recHandler.set_model(rh.Models.small_model)
 
-    magic_number_1 = 16000
-    magic_number_2 = 8000
-    magic_number_3 = 4000
+    magic_number_1 = int(16000)
+    magic_number_2 = int(8000)
+    magic_number_3 = int(4000)
 
     recognizer = KaldiRecognizer(rh.RecognitionHandler.current_model, magic_number_1)
 
     mode = config.get_value_by_prop_name("app mode")
     if mode == "manual":
-        ch.Command.named = True
-        manual_testing()
+        return manual_testing()
     elif mode != "execute":
-        exit(1)
+        return int(1)
 
     audio = pyaudio.PyAudio()
 
@@ -124,7 +117,7 @@ def main() -> int:
             execute_command(querry[0], querry[1])
 
     audio.close(audio_stream)
-    return 0
+    return int(0)
 
 
 if __name__ == "__main__":

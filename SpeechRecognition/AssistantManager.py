@@ -29,7 +29,7 @@ class Assistant:
         elif rate > 1000:
             rate = 1000
 
-        Assistant.tts.setProperty("voice", rate)
+        Assistant.tts.setProperty("rate", rate)
 
     def set_volume(self, volume: float = 1.0) -> None:
         """
@@ -41,7 +41,7 @@ class Assistant:
         elif volume > 1.0:
             volume = 1.0
 
-        Assistant.tts.setProperty("voice", volume)
+        Assistant.tts.setProperty("volume", volume)
 
     def set_language(self, language: str) -> None:
         """

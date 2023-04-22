@@ -1,4 +1,4 @@
-property: app mode;value: execute # manual | execute
+property: app mode;value: manual # manual | execute
 property: assistant name;value: гандон #
 property: assistant language;value: ru # ru | en
 property: speech rate;value: 200 # words per minute   default: 200

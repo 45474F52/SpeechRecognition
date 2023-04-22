@@ -6,7 +6,7 @@
         """
         Преобразует текст в число (до тысячи)
         """
-        number = None
+        number = int(0)
         units = text.split(" ")
         length = len(units)
         if length == 1:
@@ -33,8 +33,20 @@
 
     @staticmethod
     def float_parse(text: str) -> float:
-        """Not Implemented"""
-        pass
+        """Преобразует текст в число с плавающей точкой (в диапазоне от 0.0 до 1.0)"""
+        number = float(0.0)
+
+        units = text.split(" ")
+        length = len(units)
+        if length == 1:
+            number = float(1.0) if units[0] == "один" else float(0.0)
+        else:
+            half1 = NumbersHelper.__switch_units(units[0])
+            half2 = NumbersHelper.__switch_units(units[2])
+            num = str(half1) + "." + str(half2)
+            number = float(num)
+
+        return number if number <= float(1.0) else float(1.0)
 
     @staticmethod
     def __switch_thousands(text: str) -> int:
@@ -129,7 +141,7 @@
             return int(3)
         elif text == "два":
             return int(2)
-        elif text == "один":
+        elif text == "один" or text == "одну":
             return int(1)
         else:
             return int(0)

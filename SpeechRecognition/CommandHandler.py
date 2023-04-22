@@ -211,17 +211,26 @@ def incr_decr_prop_func(args: list[str]) -> None:
     Увеличивает или уменьшает: скорость проигрывания слов / громкость голосового ассистента
     :param args: параметры для полного сопоставления с командой
     """
-    if 3 <= len(args) < 6:
+    if 3 <= len(args) <= 6:
         prop = args[0]
         if prop == "скорость" or "громкость" and args[1] == "на":
             from NumbersHelper import NumbersHelper as nh
             from ConfigurationManager import ConfigurationManager as config
+            nums = [n for n in args[2 : len(args)]]
 
             if prop == "скорость":
-                nums = [n for n in args[2 : len(args)]]
                 value = nh.int_parse(" ".join(nums))
                 __assistant.set_rate(value)
                 config.set_value_by_prop_name("speech rate", str(value))
+            else:
+                if nums[0] == "один" or (nums[1] == "целых" and (nums[3] == "десятых" or nums[3] == "десятую")):
+                    value = nh.float_parse(" ".join(nums))
+                    __assistant.set_volume(value)
+                    config.set_value_by_prop_name("assistant volume", str(value))
+                else:
+                    return
+
+            __assistant.print_and_play(f"Параметр \"{prop}\" изменён")
 
 
 commands = [
@@ -243,7 +252,6 @@ commands = [
         ["найди", "покажи"], open_in_browser_func, "Запустить браузер с запросом"),
     Command(
         ["открой", "запусти"], start_process_func, "Запустить процесс по его имени"),
-    # изменение ни на что не влияет (изменяется только запись в файле конфигурации) (
     Command(
         ["увеличь", "прибавь", "уменьши", "убавь"], incr_decr_prop_func, "Изменить: скорость / громкость ассистента", False),
 ]

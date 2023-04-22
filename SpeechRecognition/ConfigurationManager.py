@@ -108,4 +108,4 @@ class ConfigurationManager:
                 text = text.replace(line, newLine)
 
                 with open(ConfigurationManager.__file, "w") as config:
-                    config.wirte(text)
+                    config.write(text)
