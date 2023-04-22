@@ -1,5 +1,5 @@
-property: app mode;value: manual # manual | execute
-property: assistant name;value: привет #
+property: app mode;value: execute # manual | execute
+property: assistant name;value: гандон #
 property: assistant language;value: ru # ru | en
 property: speech rate;value: 200 # words per minute   default: 200
 property: assistant volume;value: 1.0 # range of 0.0 to 1.0   default 1.0

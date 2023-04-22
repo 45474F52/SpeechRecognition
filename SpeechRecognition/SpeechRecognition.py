@@ -1,8 +1,9 @@
-﻿import ConfigurationManager as config
+﻿from ConfigurationManager import ConfigurationManager as config
 import json, pyaudio, win32api
 from vosk import KaldiRecognizer
 import CommandHandler as ch
 import RecognitionHandler as rh
+import AssistantManager as am
 
 
 def execute_command(name: str, args: list[str]) -> None:
@@ -19,7 +20,7 @@ def execute_command(name: str, args: list[str]) -> None:
                 return
 
     message = name + " " + " ".join(args)
-    ch.print_and_play(message)
+    __assistant.print_and_play(message)
 
 
 def format_text_to_parameters(text: str) -> tuple[str, list[str]]:
@@ -43,24 +44,36 @@ def manual_testing():
         text = input("Command >>> ")
         querry = format_text_to_parameters(text)
         execute_command(querry[0], querry[1])
+        ch.Command.named = True
 
     return exit(0)
+
+
+__recHandler = rh.RecognitionHandler
+__assistant = am.Assistant
 
 
 def main() -> int:
     """
     Точка старта программы
     """
+    global __recHandler
+    global __assistant
+
     language = config.get_value_by_prop_name("assistant language")
     rate = int(config.get_value_by_prop_name("speech rate"))
     volume = float(config.get_value_by_prop_name("assistant volume"))
-    rh.init(language, rate, volume)
+
+    __recHandler = rh.RecognitionHandler(language, rate, volume)
+    __assistant = __recHandler.get_assistant
+    
+    ch.init_references(__recHandler)
 
     model = config.get_value_by_prop_name("model")
     if model == "small":
-        rh.set_model(rh.Models.small_model)
+        __recHandler.set_model(rh.Models.small_model)
     elif model == "big":
-        rh.set_model(rh.Models.big_model)
+        __recHandler.set_model(rh.Models.big_model)
     else:
         exit(1)
 
@@ -68,7 +81,7 @@ def main() -> int:
     magic_number_2 = 8000
     magic_number_3 = 4000
 
-    recognizer = KaldiRecognizer(rh.current_model, magic_number_1)
+    recognizer = KaldiRecognizer(rh.RecognitionHandler.current_model, magic_number_1)
 
     mode = config.get_value_by_prop_name("app mode")
     if mode == "manual":

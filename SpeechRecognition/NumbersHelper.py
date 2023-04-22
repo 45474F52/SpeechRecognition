@@ -1,118 +1,135 @@
-﻿def int_parse(text: str) -> int:
-    """
-    Преобразует текст в число (до тысячи)
-    """
-    number = None
-    units = text.split(" ")
-    length = len(units)
-    if length == 1:
-        numh = switch_hundreds(units[0])
-        numt = switch_tens(units[0])
-        numu = switch_units(units[0])
-        number = numh + numt + numu
-    elif length == 2:
-        numh = switch_hundreds(units[0])
-        numt1 = switch_tens(units[0])
-        numt2 = switch_tens(units[1])
-        numu1 = switch_units(units[1])
-        number = numh + numt1 + numt2 + numu1
-    elif length == 3:
-        numh = switch_hundreds(units[0])
-        numt1 = switch_tens(units[1])
-        numu1 = switch_units(units[2])
-        number = numh + numt1 + numu1
+﻿class NumbersHelper:
+    """Инкапсулирует методы преобразования чисел из строкового представления в эквивалентное им числовое значение"""
 
-    return number if number <= 1000 else 1000
+    @staticmethod
+    def int_parse(text: str) -> int:
+        """
+        Преобразует текст в число (до тысячи)
+        """
+        number = None
+        units = text.split(" ")
+        length = len(units)
+        if length == 1:
+            numth = NumbersHelper.__switch_thousands(units[0])
+            numh = NumbersHelper.__switch_hundreds(units[0])
+            numt = NumbersHelper.__switch_tens(units[0])
+            numu = NumbersHelper.__switch_units(units[0])
+            number = numth + numh + numt + numu
+        elif length == 2:
+            numth = NumbersHelper.__switch_thousands(units[0])
+            numh = NumbersHelper.__switch_hundreds(units[0])
+            numt1 = NumbersHelper.__switch_tens(units[0])
+            numt2 = NumbersHelper.__switch_tens(units[1])
+            numu1 = NumbersHelper.__switch_units(units[1])
+            number = numth + numh + numt1 + numt2 + numu1
+        elif length == 3:
+            numth = NumbersHelper.__switch_thousands(units[0])
+            numh = NumbersHelper.__switch_hundreds(units[0])
+            numt1 = NumbersHelper.__switch_tens(units[1])
+            numu1 = NumbersHelper.__switch_units(units[2])
+            number = numth + numh + numt1 + numu1
 
+        return number if number <= int(1000) else int(1000)
 
-def float_parse(text: str) -> float:
-    pass
+    @staticmethod
+    def float_parse(text: str) -> float:
+        """Not Implemented"""
+        pass
 
+    @staticmethod
+    def __switch_thousands(text: str) -> int:
+        """Парсинг тысяч"""
+        if text.startswith("тыс"):
+            return int(1000)
+        else:
+            return int(0)
 
-def switch_hundreds(text: str) -> int:
-    if text.startswith("тыс"):
-        return 1000
-    elif text == "девятьсот":
-        return 900
-    elif text == "восемьсот":
-        return 800
-    elif text == "семьсот":
-        return 700
-    elif text == "шестьсот":
-        return 600
-    elif text == "пятьсот":
-        return 500
-    elif text == "четыреста":
-        return 400
-    elif text == "триста":
-        return 300
-    elif text == "двести":
-        return 200
-    elif text == "сто":
-        return 100
-    else:
-        return 0
+    @staticmethod
+    def __switch_hundreds(text: str) -> int:
+        """Парсинг сотен"""
+        if text == "девятьсот":
+            return int(900)
+        elif text == "восемьсот":
+            return int(800)
+        elif text == "семьсот":
+            return int(700)
+        elif text == "шестьсот":
+            return int(600)
+        elif text == "пятьсот":
+            return int(500)
+        elif text == "четыреста":
+            return int(400)
+        elif text == "триста":
+            return int(300)
+        elif text == "двести":
+            return int(200)
+        elif text == "сто":
+            return int(100)
+        else:
+            return int(0)
 
+    @staticmethod
+    def __switch_tens(text: str) -> int:
+        """Парсинг десятков"""
+        if text == "девяносто":
+            return int(90)
+        elif text == "восемьдесят":
+            return int(80)
+        elif text == "семьдесят":
+            return int(70)
+        elif text == "шестьдесят":
+            return int(60)
+        elif text == "пятьдесят":
+            return int(50)
+        elif text == "сорок":
+            return int(40)
+        elif text == "тридцать":
+            return int(30)
+        elif text == "двадцать":
+            return int(20)
+        elif text == "девятнадцать":
+            return int(19)
+        elif text == "восемнадцать":
+            return int(18)
+        elif text == "семнадцать":
+            return int(17)
+        elif text == "шестнадцать":
+            return int(16)
+        elif text == "пятнацдать":
+            return int(15)
+        elif text == "четырнадцать":
+            return int(14)
+        elif text == "тринадцать":
+            return int(13)
+        elif text == "двенадцать":
+            return int(12)
+        elif text == "одиннадцать" or text == "одинадцать":
+            return int(11)
+        elif text == "десять":
+            return int(10)
+        else:
+            return int(0)
 
-def switch_tens(text: str) -> int:
-    if text == "девяносто":
-        return 90
-    elif text == "восемьдесят":
-        return 80
-    elif text == "семьдесят":
-        return 70
-    elif text == "шестьдесят":
-        return 60
-    elif text == "пятьдесят":
-        return 50
-    elif text == "сорок":
-        return 40
-    elif text == "тридцать":
-        return 30
-    elif text == "двадцать":
-        return 20
-    elif text == "девятнадцать":
-        return 19
-    elif text == "восемнадцать":
-        return 18
-    elif text == "семнадцать":
-        return 17
-    elif text == "шестнадцать":
-        return 16
-    elif text == "пятнацдать":
-        return 15
-    elif text == "четырнадцать":
-        return 14
-    elif text == "тринадцать":
-        return 13
-    elif text == "двенадцать":
-        return 12
-    elif text == "одиннадцать" or text == "одинадцать":
-        return 11
-    elif text == "десять":
-        return 10
-    else:
-        return 0
-
-
-def switch_units(text: str) -> int:
-    if text == "девять":
-        return 9
-    elif text == "восемь":
-        return 8
-    elif text == "семь":
-        return 7
-    elif text == "шесть":
-        return 6
-    elif text == "пять":
-        return 5
-    elif text == "четыре":
-        return 4
-    elif text == "три":
-        return 3
-    elif text == "два":
-        return 2
-    elif text == "один":
-        return 1
-    else:
-        return 0
+    @staticmethod
+    def __switch_units(text: str) -> int:
+        """Парсинг единиц"""
+        if text == "девять":
+            return int(9)
+        elif text == "восемь":
+            return int(8)
+        elif text == "семь":
+            return int(7)
+        elif text == "шесть":
+            return int(6)
+        elif text == "пять":
+            return int(5)
+        elif text == "четыре":
+            return int(4)
+        elif text == "три":
+            return int(3)
+        elif text == "два":
+            return int(2)
+        elif text == "один":
+            return int(1)
+        else:
+            return int(0)
