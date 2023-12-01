@@ -1,0 +1,6 @@
+property: app mode;value: voice # manual | voice
+property: assistant name;value: ýé òû #
+property: assistant language;value: ru # ru | en
+property: speech rate;value: 200 # words per minute   default: 200
+property: assistant volume;value: 1.0 # range of 0.0 to 1.0   default 1.0
+property: model;value: small # small | big
